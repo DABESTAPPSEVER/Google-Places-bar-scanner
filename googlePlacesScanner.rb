@@ -1,6 +1,7 @@
 [
 	'mechanize',
-	'json'
+	'json',
+	'pp'
 ].each{|g|
 	require g
 }
@@ -33,4 +34,5 @@ File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 	
 	fullURL = url+getParamsString
 	getListings(agent, fullURL)
+	exit
 }

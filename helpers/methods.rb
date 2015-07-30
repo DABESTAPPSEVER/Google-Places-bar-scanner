@@ -4,6 +4,7 @@ def getListings(agent, listingsURL)
 	resultHash = JSON.parse(resultJSON)
 	resultsArray = resultHash['results']
 	if(resultsArray.length===0)
+		p "NO RESULTS"
 		return false
 	end
 
@@ -22,7 +23,7 @@ def getListings(agent, listingsURL)
 			lng = location['lng'].to_f # DATAPOINT
 			gPlaceId = location['id'] # DATAPOINT
 			name = location['name'] # DATAPOINT
-			p result
+			pp result
 		end
 	}
 
