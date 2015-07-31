@@ -5,7 +5,13 @@
 ].each{|g|
 	require g
 }
-require_relative 'helpers/methods.rb'
+
+[
+	'models/init',
+	'helpers/methods'
+].each{|rb|
+	require_relative rb+'.rb'
+}
 
 # SET UP AGENT
 p "SETTING UP AGENT"
@@ -15,6 +21,7 @@ agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE # Get around site's SSL
 url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 	zipCode = zipCode.strip
+	zipCode = '33401'
 
 	# Skip Puerto Rican zip codes
 	if(zipCode[0..1]==='00')
@@ -34,5 +41,4 @@ File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 	
 	fullURL = url+getParamsString
 	getListings(agent, fullURL)
-	exit
 }

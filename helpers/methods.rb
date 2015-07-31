@@ -18,12 +18,24 @@ def getListings(agent, listingsURL)
 			city = formattedAddressArray[1] # DATAPOINT
 			stateZipArray = formattedAddressArray[2].split(' ')
 			state = stateZipArray[0] # DATAPOINT
+			zip = stateZipArray[1].strip # DATAPOINT
 			location = result['geometry']['location']
 			lat = location['lat'].to_f # DATAPOINT
 			lng = location['lng'].to_f # DATAPOINT
-			gPlaceId = location['id'] # DATAPOINT
-			name = location['name'] # DATAPOINT
-			pp result
+			gPlaceId = result['id'] # DATAPOINT
+			name = result['name'] # DATAPOINT
+			pp result,
+			[
+				street,
+				city,
+				state,
+				zip,
+				lat,
+				lng,
+				gPlaceId,
+				name
+			],
+			'==============='
 		end
 	}
 
