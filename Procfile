@@ -1,1 +1,1 @@
-scrape:ruby googlePlacesScanner.rb
+scrape: ruby googlePlacesScanner.rb

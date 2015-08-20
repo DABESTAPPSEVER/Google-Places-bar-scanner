@@ -1,3 +1,22 @@
+def devKeyChooser(agent, devKeyArray)
+	devKeyArray.each_with_index{|key,idx|
+		# Testing if current key is over Google Place's API limit
+		testURL = 'https://maps.googleapis.com/maps/api/place/search/json?location=-33.88471,151.218237&radius=100&sensor=true&key='+key
+		response = agent.get(testURL).body
+		responseHash = JSON.parse(response)
+		if(responseHash['status']==='OVER_QUERY_LIMIT')
+			if(idx===devKeyArray.length-1)
+				return false
+			else
+				next
+			end
+		end	
+
+		return key
+	}
+end
+
+
 def getListings(agent, listingsURL)
 	p "OPENING #{listingsURL}"
 	resultJSON = agent.get(listingsURL).body

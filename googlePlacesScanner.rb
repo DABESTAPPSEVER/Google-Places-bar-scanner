@@ -15,6 +15,7 @@
 }
 
 lastZip = Place.lastZip # In case of a crash, get the last known zip code scanned so the script starts from there, as we'll see in the zipCode loop below...
+
 startingFromLastZip = false
 
 
@@ -26,24 +27,31 @@ agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE # Get around site's SSL
 url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 	zipCode = zipCode.strip
-
+	
+	# Skip Puerto Rican zip codes
+	if(zipCode[0..1]==='00')
+		next
+	end
+	
 	if(lastZip===nil || lastZip===zipCode)
 		startingFromLastZip = true
 	end
 
 	if(startingFromLastZip===false)
-		p "SKIPPING ZIP CODE #{zipCode}"
+		# p "SKIPPING ZIP CODE #{zipCode}"
 		next
 	end
 
-	# Skip Puerto Rican zip codes
-	if(zipCode[0..1]==='00')
-		next
+	googleDevKeyArray = ENV['GOOGLE_DEV_KEYS'].split(',')
+	key = devKeyChooser(agent, googleDevKeyArray)
+	if(key===false)
+		p "ALL KEYS OVER LIMIT. SLEEPING FOR ONE HOUR. TIME NOW IS #{Time.now}."
+		sleep 3600
 	end
 
 	getParamsHash = {
 		'query'=>'*+in+'+zipCode,
-		'key'=>ENV['GOOGLE_DEV_KEY'],
+		'key'=>key,
 		'type'=>'bar|night_club'
 	}
 	getParamsString = getParamsHash.map{|pvPair|
@@ -51,7 +59,7 @@ File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 		val = pvPair[1]
 		param+'='+val.to_s
 	}.join('&')
-	
+
 	fullURL = url+getParamsString
 	getListings(agent, fullURL)
 }
