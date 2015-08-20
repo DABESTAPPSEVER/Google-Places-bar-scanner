@@ -14,16 +14,21 @@ def getListings(agent, listingsURL)
 		country = formattedAddressArray[3] # DATAPOINT
 
 		if(country==='United States')
-			street = formattedAddressArray[0] # DATAPOINT
-			city = formattedAddressArray[1] # DATAPOINT
-			stateZipArray = formattedAddressArray[2].split(' ')
-			state = stateZipArray[0] # DATAPOINT
-			zip = stateZipArray[1].strip # DATAPOINT
-			location = result['geometry']['location']
-			lat = location['lat'].to_f # DATAPOINT
-			lng = location['lng'].to_f # DATAPOINT
-			gPlaceId = result['id'] # DATAPOINT
-			name = result['name'] # DATAPOINT
+			begin
+				street = formattedAddressArray[0] # DATAPOINT
+				city = formattedAddressArray[1] # DATAPOINT
+				stateZipArray = formattedAddressArray[2].split(' ')
+				state = stateZipArray[0] # DATAPOINT
+				zip = stateZipArray[1].strip # DATAPOINT
+				location = result['geometry']['location']
+				lat = location['lat'].to_f # DATAPOINT
+				lng = location['lng'].to_f # DATAPOINT
+				gPlaceId = result['id'] # DATAPOINT
+				name = result['name'] # DATAPOINT				
+			rescue Exception => e
+				next
+			end
+
 
 			newPlace = Place.new
 			newPlace.ID = gPlaceId
@@ -35,13 +40,14 @@ def getListings(agent, listingsURL)
 			newPlace.State = state 
 			newPlace.Zip = zip 
 			begin
-				p newPlace
 				newPlace.save_changes
 			rescue Exception => e
-				p "ERROR INSERTING #{newPlace}",
-				"#{e}",
-				"#{e.backtrace}"
+				# p "ERROR INSERTING #{newPlace}",
+				# "#{e}",
+				# "#{e.backtrace.join("\n")}"
+				next
 			end
+			pp newPlace
 			# pp result,
 			# [
 			# 	street,

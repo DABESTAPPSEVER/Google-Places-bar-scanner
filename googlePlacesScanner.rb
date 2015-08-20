@@ -14,6 +14,10 @@
 	require_relative rb+'.rb'
 }
 
+lastZip = Place.lastZip # In case of a crash, get the last known zip code scanned so the script starts from there, as we'll see in the zipCode loop below...
+startingFromLastZip = false
+
+
 # SET UP AGENT
 p "SETTING UP AGENT"
 agent = Mechanize.new
@@ -22,6 +26,15 @@ agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE # Get around site's SSL
 url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 	zipCode = zipCode.strip
+
+	if(lastZip===nil || lastZip===zipCode)
+		startingFromLastZip = true
+	end
+
+	if(startingFromLastZip===false)
+		p "SKIPPING ZIP CODE #{zipCode}"
+		next
+	end
 
 	# Skip Puerto Rican zip codes
 	if(zipCode[0..1]==='00')
