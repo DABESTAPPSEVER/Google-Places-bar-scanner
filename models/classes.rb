@@ -12,6 +12,8 @@ class Place  < Sequel::Model
 			return nil
 		end
 
-		return placeObject.Zip
+		zip = placeObject.Zip
+		zip = zip[0..4] # If `zip` is somethign like 12345-1234, only get the first five characters
+ 		return zip
 	end
 end
