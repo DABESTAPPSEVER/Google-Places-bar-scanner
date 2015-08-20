@@ -24,18 +24,36 @@ def getListings(agent, listingsURL)
 			lng = location['lng'].to_f # DATAPOINT
 			gPlaceId = result['id'] # DATAPOINT
 			name = result['name'] # DATAPOINT
-			pp result,
-			[
-				street,
-				city,
-				state,
-				zip,
-				lat,
-				lng,
-				gPlaceId,
-				name
-			],
-			'==============='
+
+			newPlace = Place.new
+			newPlace.ID = gPlaceId
+			newPlace.Name = name
+			newPlace.Latitude = lat 
+			newPlace.Longitude = lng
+			newPlace.Street = street
+			newPlace.City = city 
+			newPlace.State = state 
+			newPlace.Zip = zip 
+			begin
+				p newPlace
+				newPlace.save_changes
+			rescue Exception => e
+				p "ERROR INSERTING #{newPlace}",
+				"#{e}",
+				"#{e.backtrace}"
+			end
+			# pp result,
+			# [
+			# 	street,
+			# 	city,
+			# 	state,
+			# 	zip,
+			# 	lat,
+			# 	lng,
+			# 	gPlaceId,
+			# 	name
+			# ],
+			# '==============='
 		end
 	}
 

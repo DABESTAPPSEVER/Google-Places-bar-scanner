@@ -1,6 +1,7 @@
 [
 	'mechanize',
 	'json',
+	'sequel',
 	'pp'
 ].each{|g|
 	require g
@@ -21,7 +22,6 @@ agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE # Get around site's SSL
 url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 	zipCode = zipCode.strip
-	zipCode = '33401'
 
 	# Skip Puerto Rican zip codes
 	if(zipCode[0..1]==='00')
@@ -30,7 +30,7 @@ File.open('zipCodes.txt','r').readlines[0..-1].each{|zipCode|
 
 	getParamsHash = {
 		'query'=>'*+in+'+zipCode,
-		'key'=>ARGV[0],
+		'key'=>ENV['GOOGLE_DEV_KEY'],
 		'type'=>'bar|night_club'
 	}
 	getParamsString = getParamsHash.map{|pvPair|
