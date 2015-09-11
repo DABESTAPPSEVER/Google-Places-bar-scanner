@@ -1,3 +1,25 @@
+def errorLogging(e)
+	p "ERROR: #{e}"
+	puts e.backtrace
+
+	errorLog = 'ERRORS.txt'
+
+	if(File.exist?(errorLog)===false)
+		File.open(errorLog,'w')
+	end
+
+	File.open(errorLog,'a'){|f|
+		[
+			'====================',
+			Time.now,
+			e,
+			e.backtrace
+		].each{|err| 
+			f.puts(err)
+		}
+	}
+end
+
 def devKeyChooser(agent, devKeyArray)
 	devKeyArray.each_with_index{|key,idx|
 		# Testing if current key is over Google Place's API limit
@@ -61,24 +83,12 @@ def getListings(agent, listingsURL)
 			begin
 				newPlace.save_changes
 			rescue Exception => e
-				# p "ERROR INSERTING #{newPlace}",
-				# "#{e}",
+				p "ERROR INSERTING #{newPlace}",
+				"#{e}"
 				# "#{e.backtrace.join("\n")}"
 				next
 			end
 			pp newPlace
-			# pp result,
-			# [
-			# 	street,
-			# 	city,
-			# 	state,
-			# 	zip,
-			# 	lat,
-			# 	lng,
-			# 	gPlaceId,
-			# 	name
-			# ],
-			# '==============='
 		end
 	}
 
@@ -87,6 +97,7 @@ def getListings(agent, listingsURL)
 		return false
 	end
 
-	nextPageResultsURL = listingsURL+'&pagetoken='+nextPageToken
+	sleep 2 # Need to sleep a bit before going to next page or else it won't get the results from the next page
+	nextPageResultsURL = listingsURL.gsub(/\&pagetoken\=.*/,'')+'&pagetoken='+nextPageToken
 	getListings(agent, nextPageResultsURL)
 end
